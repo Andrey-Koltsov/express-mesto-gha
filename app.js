@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const routes = require('./routes');
+const router = require('./routes');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -18,7 +18,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(routes);
+app.use(router);
 
 app.listen(PORT, () => {
   console.log(`Сервер запущен на ${PORT} порту`);

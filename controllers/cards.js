@@ -37,12 +37,11 @@ const createCard = async (req, res) => {
 
 const deleteCard = async (req, res) => {
   try {
-    const card = await Card.findByIdAndDelete(
-      req.params.cardId,
-      { $addToSet: { likes: req.user._id } },
-      { new: true },
-    );
-    return res.status(200).send({ data: card });
+    const card = await Card.findByIdAndDelete(req.params.cardId);
+    if (card) {
+      return res.status(200).send({ data: card });
+    }
+    return res.status(404).send({ message: 'Карточка не найдена' });
   } catch (err) {
     if (err.name === 'ValidationError') {
       return res.status(400).send({ message: 'Переданы некорректные данные', ...err });
@@ -61,7 +60,7 @@ const likeCard = async (req, res) => {
     if (card) {
       return res.status(200).send({ data: card });
     }
-    return res.status(404).send({ message: 'Карточка не найдена' });
+    return res.status(400).send({ message: 'Карточка не найдена' });
   } catch (err) {
     if (err.name === 'CastError') {
       return res.status(404).send({ message: 'Карточка не найдена', ...err });
@@ -80,7 +79,7 @@ const dislikeCard = async (req, res) => {
     if (card) {
       return res.status(200).send({ data: card });
     }
-    return res.status(404).send({ message: 'Карточка не найдена' });
+    return res.status(400).send({ message: 'Карточка не найдена' });
   } catch (err) {
     if (err.name === 'CastError') {
       return res.status(404).send({ message: 'Карточка не найдена', ...err });
