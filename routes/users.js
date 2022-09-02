@@ -11,8 +11,8 @@ const userRoutes = express.Router();
 
 userRoutes.get('/', getUsers);
 userRoutes.get('/:id', getUserById);
-userRoutes.post('/', express.json(), createUser);
-userRoutes.patch('/me', express.json(), updateUser);
-userRoutes.patch('/me/avatar', express.json(), updateUserAvatar);
+userRoutes.post('/', createUser);
+userRoutes.patch('/me', updateUser);
+userRoutes.patch('/me/avatar', updateUserAvatar);
 
 module.exports = userRoutes;
