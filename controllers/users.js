@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const {
   CREATED_CODE,
@@ -51,7 +52,6 @@ const createUser = async (req, res) => {
     });
     return res.status(CREATED_CODE).send({ data: user });
   } catch (err) {
-    console.log(err);
     if (err.name === 'ValidationError') {
       return res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные' });
     }
@@ -116,16 +116,29 @@ const updateUserAvatar = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(NOT_FOUND_CODE).send({ message: 'Неправильный пользователь или пароль' });
     }
+
     const matched = await bcrypt.compare(password, user.password);
     if (!matched) {
       return res.status(NOT_FOUND_CODE).send({ message: 'Неправильный пользователь или пароль' });
     }
-    return res.send(user);
+
+    const token = jwt.sign({
+      _id: user._id,
+    }, 'secret');
+
+    return res.cookie('jwt', token, {
+      maxAge: 3600000,
+      httpOnly: true,
+      sameSite: true,
+    })
+      .end();
   } catch (err) {
+    console.log(err);
     return res.status(SERVER_ERROR_CODE).send({ message: 'Произошла неизвестная ошибка' });
   }
 };
