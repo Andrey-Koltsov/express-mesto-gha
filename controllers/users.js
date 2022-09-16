@@ -1,3 +1,4 @@
+const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const {
   CREATED_CODE,
@@ -33,10 +34,24 @@ const getUserById = async (req, res) => {
 
 const createUser = async (req, res) => {
   try {
-    const { name, about, avatar } = req.body;
-    const user = await User.create({ name, about, avatar });
+    const {
+      name,
+      about,
+      avatar,
+      email,
+      password,
+    } = req.body;
+    const passwordHash = await bcrypt.hash(password, 10);
+    const user = await User.create({
+      name,
+      about,
+      avatar,
+      email,
+      password: passwordHash,
+    });
     return res.status(CREATED_CODE).send({ data: user });
   } catch (err) {
+    console.log(err);
     if (err.name === 'ValidationError') {
       return res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные' });
     }
@@ -98,10 +113,28 @@ const updateUserAvatar = async (req, res) => {
   }
 };
 
+const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(NOT_FOUND_CODE).send({ message: 'Неправильный пользователь или пароль' });
+    }
+    const matched = await bcrypt.compare(password, user.password);
+    if (!matched) {
+      return res.status(NOT_FOUND_CODE).send({ message: 'Неправильный пользователь или пароль' });
+    }
+    return res.send(user);
+  } catch (err) {
+    return res.status(SERVER_ERROR_CODE).send({ message: 'Произошла неизвестная ошибка' });
+  }
+};
+
 module.exports = {
   getUsers,
   getUserById,
-  createUser,
   updateUser,
   updateUserAvatar,
+  createUser,
+  login,
 };
