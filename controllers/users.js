@@ -44,9 +44,9 @@ const getUserById = async (req, res, next) => {
 const createUser = async (req, res, next) => {
   try {
     const {
-      name,
-      about,
-      avatar,
+      name = 'Жак-Ив Кусто',
+      about = 'Исследователь',
+      avatar = 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
       email,
       password,
     } = req.body;

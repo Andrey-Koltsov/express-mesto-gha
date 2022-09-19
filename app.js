@@ -22,12 +22,11 @@ app.use(cookieParser());
 
 app.post('/signup', celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30).default('Жак-Ив Кусто'),
-    about: Joi.string().min(2).max(30).default('Исследователь'),
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
     avatar: Joi
       .string()
-      .pattern(/^(https?:\/\/)?([\w.]+)\.([a-z]{2,6}\.?)(\/[\w.]*)*\/?$/)
-      .default('https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png'),
+      .pattern(/^(https?:\/\/)?([\w.]+)\.([a-z]{2,6}\.?)(\/[\w.]*)*\/?$/),
     email: Joi.string().required().email(),
     password: Joi.string().required(),
   }),
