@@ -5,6 +5,7 @@ const { CREATED_CODE } = require('../utils/statusCode');
 const NotFoundError = require('../errors/NotFoundError');
 const BadRequestError = require('../errors/BadRequestError');
 const ConflictError = require('../errors/ConflictError');
+const UnauthorizedError = require('../errors/UnauthorizedError');
 
 const getUsers = async (req, res, next) => {
   try {
@@ -31,7 +32,7 @@ const getUserById = async (req, res, next) => {
     if (user) {
       return res.send(user);
     }
-    return next(new NotFoundError('Пользователь не найден'));
+    return next(new BadRequestError('Пользователь не найден'));
   } catch (err) {
     if (err.name === 'CastError') {
       return next(new NotFoundError('Пользователь не найден'));
@@ -57,6 +58,7 @@ const createUser = async (req, res, next) => {
       email,
       password: passwordHash,
     });
+    delete user.password;
     return res.status(CREATED_CODE).send({ data: user });
   } catch (err) {
     if (err.name === 'ValidationError') {
@@ -129,7 +131,7 @@ const login = async (req, res, next) => {
 
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
-      return next(new NotFoundError('Неправильный пользователь или пароль'));
+      return next(new UnauthorizedError('Неправильный пользователь или пароль'));
     }
 
     const matched = await bcrypt.compare(password, user.password);
@@ -146,7 +148,7 @@ const login = async (req, res, next) => {
       httpOnly: true,
       sameSite: true,
     })
-      .end();
+      .send({ messge: 'Успешная авторизация' });
   } catch (err) {
     return next(err);
   }

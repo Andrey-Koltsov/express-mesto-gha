@@ -42,12 +42,13 @@ const createCard = async (req, res, next) => {
 const deleteCard = async (req, res, next) => {
   try {
     const card = await Card.findById(req.params.id);
-    if (card.owner.toString() === req.user._id) {
-      const deletedcard = await Card.findByIdAndDelete(req.params.id);
-      if (deletedcard) {
-        return res.send({ data: deletedcard });
+    if (card) {
+      if (card.owner.toString() === req.user._id) {
+        const deletedcard = await Card.findByIdAndDelete(req.params.id);
+        if (deletedcard) {
+          return res.send({ data: deletedcard });
+        }
       }
-    } else {
       return next(new ForbiddenError('Нет прав на удаление'));
     }
     return next(new NotFoundError('Карточка не найдена'));
@@ -69,7 +70,7 @@ const likeCard = async (req, res, next) => {
     if (card) {
       return res.send({ data: card });
     }
-    return next(new NotFoundError('Карточка не найдена'));
+    return next(new BadRequestError('Карточка не найдена'));
   } catch (err) {
     if (err.name === 'CastError') {
       return next(new NotFoundError('Карточка не найдена'));
@@ -88,7 +89,7 @@ const dislikeCard = async (req, res, next) => {
     if (card) {
       return res.send({ data: card });
     }
-    return next(new NotFoundError('Карточка не найдена'));
+    return next(new BadRequestError('Карточка не найдена'));
   } catch (err) {
     if (err.name === 'CastError') {
       return next(new NotFoundError('Карточка не найдена'));
