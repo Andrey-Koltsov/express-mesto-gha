@@ -70,10 +70,10 @@ const likeCard = async (req, res, next) => {
     if (card) {
       return res.send({ data: card });
     }
-    return next(new BadRequestError('Карточка не найдена'));
+    return next(new NotFoundError('Карточка не найдена'));
   } catch (err) {
     if (err.name === 'CastError') {
-      return next(new NotFoundError('Карточка не найдена'));
+      return next(new BadRequestError('Карточка не найдена'));
     }
     return next(err);
   }
@@ -89,10 +89,10 @@ const dislikeCard = async (req, res, next) => {
     if (card) {
       return res.send({ data: card });
     }
-    return next(new BadRequestError('Карточка не найдена'));
+    return next(new NotFoundError('Карточка не найдена'));
   } catch (err) {
     if (err.name === 'CastError') {
-      return next(new NotFoundError('Карточка не найдена'));
+      return next(new BadRequestError('Карточка не найдена'));
     }
     return next(err);
   }

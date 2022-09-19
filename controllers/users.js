@@ -32,10 +32,10 @@ const getUserById = async (req, res, next) => {
     if (user) {
       return res.send(user);
     }
-    return next(new BadRequestError('Пользователь не найден'));
+    return next(new NotFoundError('Пользователь не найден'));
   } catch (err) {
     if (err.name === 'CastError') {
-      return next(new NotFoundError('Пользователь не найден'));
+      return next(new BadRequestError('Пользователь не найден'));
     }
     return next(err);
   }

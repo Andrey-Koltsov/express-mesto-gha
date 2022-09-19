@@ -22,7 +22,7 @@ userRoutes.patch('/me', celebrate({
 userRoutes.get('/:id', getUserById);
 userRoutes.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
-    link: Joi.string().required(),
+    avatar: Joi.string().required(),
   }),
 }), updateUserAvatar);
 
