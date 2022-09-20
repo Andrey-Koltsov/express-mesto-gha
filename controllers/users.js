@@ -68,7 +68,6 @@ const createUser = async (req, res, next) => {
       },
     });
   } catch (err) {
-    console.log(err);
     if (err.code === 11000) {
       return next(new ConflictError('Пользователь с таким email уже существует'));
     }
