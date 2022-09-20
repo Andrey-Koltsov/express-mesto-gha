@@ -13,8 +13,17 @@ const {
 const cardRoutes = express.Router();
 
 cardRoutes.get('/', getCards);
-cardRoutes.get('/:id', getCardById);
-cardRoutes.delete('/:id', deleteCard);
+cardRoutes.get('/:id', celebrate({
+  params: Joi.object().keys({
+    id: Joi.string().hex(),
+  }),
+}), getCardById);
+
+cardRoutes.delete('/:id', celebrate({
+  params: Joi.object().keys({
+    id: Joi.string().hex(),
+  }),
+}), deleteCard);
 
 cardRoutes.post('/', celebrate({
   body: Joi.object().keys({
@@ -23,7 +32,16 @@ cardRoutes.post('/', celebrate({
   }),
 }), createCard);
 
-cardRoutes.put('/:cardId/likes', likeCard);
-cardRoutes.delete('/:cardId/likes', dislikeCard);
+cardRoutes.put('/:cardId/likes', celebrate({
+  params: Joi.object().keys({
+    id: Joi.string().hex(),
+  }),
+}), likeCard);
+
+cardRoutes.delete('/:cardId/likes', celebrate({
+  params: Joi.object().keys({
+    id: Joi.string().hex(),
+  }),
+}), dislikeCard);
 
 module.exports = cardRoutes;

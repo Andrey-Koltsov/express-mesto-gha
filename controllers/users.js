@@ -44,17 +44,17 @@ const getUserById = async (req, res, next) => {
 const createUser = async (req, res, next) => {
   try {
     const {
-      name = 'Жак-Ив Кусто',
-      about = 'Исследователь',
-      avatar = 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+      name,
+      about,
+      avatar,
       email,
       password,
     } = req.body;
     const passwordHash = await bcrypt.hash(password, 10);
     const user = await User.create({
-      name,
-      about,
-      avatar,
+      name: name || 'Жак-Ив Кусто',
+      about: about || 'Исследователь',
+      avatar: avatar || 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
       email,
       password: passwordHash,
     });
