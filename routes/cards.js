@@ -28,19 +28,19 @@ cardRoutes.delete('/:id', celebrate({
 cardRoutes.post('/', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required().pattern(/^(https?:\/\/)?([\w.]+)\.([a-z]{2,6}\.?)(\/[\w.]*)*\/?$/),
+    link: Joi.string().required().pattern(/^https?:\/\/(?:[a-z0-9-]+\.)+[a-z]{2,6}(?:\/[^/#?]+)+\.(?:jpg|gif|png)$/),
   }),
 }), createCard);
 
 cardRoutes.put('/:cardId/likes', celebrate({
   params: Joi.object().keys({
-    id: Joi.string().hex(),
+    cardId: Joi.string().hex(),
   }),
 }), likeCard);
 
 cardRoutes.delete('/:cardId/likes', celebrate({
   params: Joi.object().keys({
-    id: Joi.string().hex(),
+    cardId: Joi.string().hex(),
   }),
 }), dislikeCard);
 
