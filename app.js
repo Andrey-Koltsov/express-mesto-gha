@@ -7,7 +7,8 @@ const router = require('./routes');
 
 const auth = require('./middlewares/auth');
 const errorsHandler = require('./middlewares/errorsHandler');
-const { login, createUser } = require('./controllers/users');
+const { login, createUser, signout } = require('./controllers/users');
+const { URL_REGEXP } = require('./utils/constants');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -26,7 +27,7 @@ app.post('/signup', celebrate({
     about: Joi.string().min(2).max(30),
     avatar: Joi
       .string()
-      .pattern(/^(https?):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])$/),
+      .pattern(URL_REGEXP),
     email: Joi.string().required().email(),
     password: Joi.string().required(),
   }),
@@ -40,6 +41,7 @@ app.post('/signin', celebrate({
 }), login);
 
 app.use(auth);
+app.get('/signout', signout);
 app.use(router);
 
 app.use(errors());

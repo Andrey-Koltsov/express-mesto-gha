@@ -1,5 +1,5 @@
 const Card = require('../models/Card');
-const { CREATED_CODE } = require('../utils/statusCode');
+const { CREATED_CODE } = require('../utils/constants');
 const NotFoundError = require('../errors/NotFoundError');
 const BadRequestError = require('../errors/BadRequestError');
 const ForbiddenError = require('../errors/ForbiddenError');
@@ -10,19 +10,6 @@ const getCards = async (req, res, next) => {
     res.send(cards);
   } catch (err) {
     next(err);
-  }
-};
-
-const getCardById = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const card = await Card.findById(id);
-    return res.send(card);
-  } catch (err) {
-    if (err.name === 'CastError') {
-      return next(new NotFoundError('Карточка не найдена'));
-    }
-    return next(err);
   }
 };
 
@@ -100,7 +87,6 @@ const dislikeCard = async (req, res, next) => {
 
 module.exports = {
   getCards,
-  getCardById,
   createCard,
   deleteCard,
   likeCard,

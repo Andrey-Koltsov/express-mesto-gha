@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { URL_REGEXP } = require('../utils/constants');
 
 const userSchema = mongoose.Schema({
   name: {
@@ -17,7 +18,7 @@ const userSchema = mongoose.Schema({
     type: String,
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
-      validator: (v) => /^(https?):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])$/.test(v),
+      validator: (v) => URL_REGEXP.test(v),
       message: 'Не правильный формат ссылки',
     },
   },
@@ -30,7 +31,6 @@ const userSchema = mongoose.Schema({
     type: String,
     select: false,
     required: true,
-    minlength: [8, 'Пароль должен содержать минимум 8 символов'],
   },
 });
 
