@@ -17,7 +17,7 @@ const createCard = async (req, res, next) => {
   try {
     const { name, link } = req.body;
     const card = await Card.create({ name, link, owner: req.user._id });
-    return res.status(CREATED_CODE).send({ data: card });
+    return res.status(CREATED_CODE).send(card);
   } catch (err) {
     if (err.name === 'ValidationError') {
       return next(new BadRequestError('Переданы некорректные данные'));
@@ -33,7 +33,7 @@ const deleteCard = async (req, res, next) => {
       if (card.owner.toString() === req.user._id) {
         const deletedcard = await Card.findByIdAndDelete(req.params.id);
         if (deletedcard) {
-          return res.send({ data: deletedcard });
+          return res.send(deletedcard);
         }
       }
       return next(new ForbiddenError('Нет прав на удаление'));
@@ -55,7 +55,7 @@ const likeCard = async (req, res, next) => {
       { new: true },
     );
     if (card) {
-      return res.send({ data: card });
+      return res.send(card);
     }
     return next(new NotFoundError('Карточка не найдена'));
   } catch (err) {
@@ -74,7 +74,7 @@ const dislikeCard = async (req, res, next) => {
       { new: true },
     );
     if (card) {
-      return res.send({ data: card });
+      return res.send(card);
     }
     return next(new NotFoundError('Карточка не найдена'));
   } catch (err) {

@@ -8,6 +8,8 @@ const BadRequestError = require('../errors/BadRequestError');
 const ConflictError = require('../errors/ConflictError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 
+const { NODE_ENV, JWT_SECRET } = process.env;
+
 const getUsers = async (req, res, next) => {
   try {
     const users = await User.find({});
@@ -60,13 +62,11 @@ const createUser = async (req, res, next) => {
       password: passwordHash,
     });
     return res.status(CREATED_CODE).send({
-      data: {
-        _id: user._id,
-        name: user.name,
-        about: user.about,
-        avatar: user.avatar,
-        email: user.email,
-      },
+      _id: user._id,
+      name: user.name,
+      about: user.about,
+      avatar: user.avatar,
+      email: user.email,
     });
   } catch (err) {
     if (err.code === 11000) {
@@ -91,7 +91,7 @@ const updateUser = async (req, res, next) => {
       },
     );
     if (user) {
-      return res.send({ data: user });
+      return res.send(user);
     }
     return next(new NotFoundError('Пользователь не найден'));
   } catch (err) {
@@ -114,7 +114,7 @@ const updateUserAvatar = async (req, res, next) => {
       },
     );
     if (user) {
-      return res.send({ data: user });
+      return res.send(user);
     }
     return next(new NotFoundError('Пользователь не найден'));
   } catch (err) {
@@ -141,14 +141,14 @@ const login = async (req, res, next) => {
 
     const token = jwt.sign({
       _id: user._id,
-    }, 'secret');
+    }, NODE_ENV === 'production' ? JWT_SECRET : 'secret');
 
     return res.cookie('jwt', token, {
       maxAge: 3600000,
       httpOnly: true,
       sameSite: true,
     })
-      .send({ messge: 'Успешная авторизация' });
+      .send({ message: 'Успешная авторизация', token });
   } catch (err) {
     return next(err);
   }
